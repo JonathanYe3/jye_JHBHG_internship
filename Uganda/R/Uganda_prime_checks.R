@@ -19,31 +19,6 @@ split_BRACE_df <- function(df){
       return(df_list)
 }
 
-# Format dataframes
-format_df <- function(df){
-      #Split into two dfs - accurate, inaccurate
-      num_accurate <- sum(df$accuracy)
-      
-      new_df <- data.frame(subject = unique(df$subject), 
-                           block = unique(df$block), 
-                           date = NA,
-                           NumCompletions = 1,
-                           test = which,
-                           duration = "idk",
-                           n=100,
-                           n_Accurate =  num_accurate,
-                           n_Inaccurate = 100-num_accurate,
-                           PercentAccurate_Overall = num_accurate/100,
-                           responseTime_Overall = mean(df$response.time..ms.),
-                           responseTime_std_Overall = sd(df$response.time..ms.)
-                           )
-      return(new_df)
-}
-
-flank_list <- split_BRACE_df(flank_prime)
-ug0001 <- flank_list[[1]]
-ug0001_formatted <- format_df(ug001) 
-
 #' To be used inside format_df
 #' Takes a type such as congruent and spits out summary stats (overall, std_overall, accurate)
 summary_stats <- function(df, type, type_string){
@@ -73,7 +48,15 @@ summary_stats <- function(df, type, type_string){
       return(new_df)
 }
 
-ug0001_formatted <- summary_stats(ug001, type = congruent, type_string = "congruent")
+#Test case
+flank_list <- split_BRACE_df(flank_prime)
+ug0001 <- flank_list[[1]]
+ug0001_formatted <- summary_stats(ug0001, type = congruent, type_string = "congruent")
 
 # Loop over
-formatted_flank <- lapply(flank_list, format_df)
+# Flanker
+formatted_flank <- lapply(flank_list, summary_stats, type = congruent, type_string = "congruent")
+flank_congruent_df <- do.call(rbind.data.frame, formatted_flank)
+
+formatted_flank <- lapply(flank_list, summary_stats, type = incongruent, type_string = "incongruent")
+flank_incongruent_df <- do.call(rbind.data.frame, formatted_flank)
