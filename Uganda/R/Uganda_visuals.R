@@ -41,8 +41,8 @@ face_cor <- cor(temp)
 corrplot(face_cor, method = 'number', order = 'AOE', diag = FALSE)
 corrplot(face_cor, method = 'shade', order = 'AOE', diag = FALSE)
 
-# ggplot facetask
-# Some issues here, needs x,y
+# ggplot Facetask
+
 face_cor <- round(cor(temp),2)
 face_cor <- melt(face_cor)
 ggplot(data = face_cor, aes(X1, X2, fill = value))+
@@ -59,8 +59,21 @@ ggplot(data = face_cor, aes(X1, X2, fill = value))+
 temp <- flanker_wide[ , colSums(is.na(flanker_wide)) == 0]
 temp <- temp[,-c(1:6, 8, 16, 24)]
 dropped_cols_flank <- setdiff(names(flanker_wide),names(temp))
-face_cor <- cor(temp)
-corrplot(face_cor, method = 'number', order = 'AOE', diag = FALSE)
-corrplot(face_cor, method = 'shade', order = 'AOE', diag = FALSE)
+flank_cor <- cor(temp)
+corrplot(flank_cor, method = 'number', order = 'AOE', diag = FALSE)
+corrplot(flank_cor, method = 'shade', order = 'AOE', diag = FALSE)
 
+# ggplot Flanker
+
+flank_cor <- round(cor(temp),2)
+flank_cor <- melt(face_cor)
+ggplot(data = flank_cor, aes(X1, X2, fill = value))+
+      geom_tile(color = "white")+
+      scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                           midpoint = 0, limit = c(-1,1), space = "Lab", 
+                           name="Pearson\nCorrelation") +
+      theme_minimal()+ 
+      theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                       size = 10, hjust = 1))+
+      coord_fixed()
 
