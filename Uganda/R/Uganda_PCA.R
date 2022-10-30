@@ -9,6 +9,8 @@ facetask_wide <- read_excel(path = Uganda_TwoTests, sheet = 3)
 facetask <- facetask_wide[,sapply(facetask_wide, is.numeric)]
 facetask[,c("NumCompletions", "n", "go_n", "nogo_n")] <- NULL
 face_cor <- cor(facetask, use = "pairwise.complete.obs") %>% scale()
+temp <- corr.test(as.matrix(facetask)) 
+# use these p values to make the stars
 
 face_pca <- psych::principal(facetask, nfactors = 10)
 base_face_pca <- prcomp(face_cor)
