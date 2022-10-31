@@ -19,4 +19,13 @@ p2 <- ggplot(data = face_vaccounted, aes(x= reorder(rownames(face_vaccounted), d
       geom_line() + geom_point()
 p1+p2
 
-      
+      # Lollipop Plot
+face_loadings <- face_pca[["loadings"]] 
+face_loadings <- data.frame(matrix(as.numeric(face_loadings), attributes(face_loadings)$dim, 
+                                     dimnames=attributes(face_loadings)$dimnames))
+lollipop <- plotly::plot_ly(x=face_loadings[,"RC1"], y=face_loadings[,"RC2"], z=face_loadings[,"RC3"],
+                type="scatter3d", mode="markers")
+lollipop <- lollipop %>% 
+      layout(title = 'Facetask Lollipop - first 3 components', 
+             scene = list(xaxis=list(title = 'RC1'),yaxis=list(title = 'RC2'),zaxis=list(title = 'RC3')))
+            

@@ -1,4 +1,5 @@
-pacman::p_load("dplyr", "tidyr", "ggplot2", "ggstatsplot", "readxl", "corrplot", "reshape2", "psych", "patchwork")
+pacman::p_load("dplyr", "tidyr", "ggplot2", "ggstatsplot", "readxl", "corrplot", 
+               "reshape2", "psych", "patchwork", "plotly")
 
 # Load data
 Uganda_TwoTests <- "Uganda/Data/Uganda_TwoTests.xlsx"
