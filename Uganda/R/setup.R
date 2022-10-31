@@ -11,3 +11,11 @@ facetask_num[,c("NumCompletions", "n", "go_n", "nogo_n", "session", "block")] <-
 
 flanker_num <- flanker_wide[,sapply(facetask_wide, is.numeric)]
 flanker_num[,c("NumCompletions", "n", "congruent_n", "incongruent_n", "session", "block")] <- NULL
+
+# Matrix to dataframe function
+#' @param mat a numeric matrix
+matrix_to_df <- function(mat){
+      df <- data.frame(matrix(as.numeric(mat), attributes(mat)$dim, 
+                        dimnames=attributes(mat)$dimnames))
+      return(df)
+}
