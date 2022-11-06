@@ -73,8 +73,3 @@ flank_s1
 flank_s2
 flank_lollipop
 flank_scatter
-
-# Heat map fun
-
-
-
