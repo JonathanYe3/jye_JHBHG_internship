@@ -16,6 +16,10 @@ face_s1 <- ggplot(data = face_vaccounted, aes(x= reorder(rownames(face_vaccounte
 face_s2 <- ggplot(data = face_vaccounted, aes(x= reorder(rownames(face_vaccounted), desc(Proportion.Var)), y=Cumulative.Proportion, group=1))+
       geom_line() + geom_point()
 
+face_scree <- ggplot(data = face_vaccounted, aes(x= reorder(rownames(face_vaccounted), desc(Proportion.Var)))) + 
+                           geom_bar(stat="identity", width=0.5, aes(y=Proportion.Var)) +
+                           geom_line(aes(y= Cumulative.Proportion, group=1))
+
       # Lollipop Plot
 face_loadings <- face_pca[["loadings"]] %>% matrix_to_df()
 
@@ -34,9 +38,9 @@ face_scatter <- plotly::plot_ly(x=face_scores[,"RC1"], y = face_scores[,"RC3"],
              scene = list(xaxis=list(title = 'RC1'),yaxis=list(title = 'RC3')))
 
       #Results
-face_s1
+face_s1 + face_s2
 face_s2
-face_lollipop
+face_lollipop # loading plot
 face_scatter
 
 # Flanker PCA
@@ -63,7 +67,7 @@ flank_lollipop <- flank_lollipop %>%
       # Scatterplot of scores - for 2 components
 flank_scores <- flank_pca[["scores"]] %>% matrix_to_df()
 
-flank_scatter <- plotly::plot_ly(x=flank_scores[,"RC1"], y = flank_scores[,"RC3"], 
+flank_scatter <- plotly::plot_ly(x=flank_scores[,"RC3"], y = flank_scores[,"RC2"], 
                                 type = "scatter", mode="markers") %>% 
       layout(title = 'Flanker Scores - RC1 vs. RC3', 
              scene = list(xaxis=list(title = 'RC1'),yaxis=list(title = 'RC3')))
