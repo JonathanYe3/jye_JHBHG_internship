@@ -77,3 +77,23 @@ pca_plots <- function(pca, comp_1 = "RC1", comp_2 = "RC2"){
       names(plots_list) <- c("pop", "scree", "scatter")
       return(plots_list)
 }
+
+#' Outputs correlation heatmap for the components of a pca
+#' @param pca output from my_pca
+#' 
+pca_heatmap <- function(pca){
+      loadings <- pca[["loadings"]]
+      cor <- cor(loadings, use = "pairwise.complete.obs")
+      cor <- data.frame(Variables = rownames(cor), cor) %>% 
+            pivot_longer(cols = !Variables)
+      
+      ggplot(data = cor, aes(x=Variables,y=name, fill=value))+geom_tile()+
+            scale_fill_gradient2(low = "red", high = "blue", mid = "white", 
+                                 midpoint = 0, limit = c(-1,1), space = "Lab", 
+                                 name="Pearson\nCorrelation") +
+            theme_minimal()+ 
+            theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                             size = 10, hjust = 1))+
+            coord_fixed()+
+            geom_signif(comparisons = list(c("RC2","RC3"))) #### help
+}
