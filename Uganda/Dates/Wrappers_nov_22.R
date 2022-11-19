@@ -31,3 +31,49 @@ matrix_to_df <- function(mat){
                               dimnames=attributes(mat)$dimnames))
       return(df)
 }
+
+
+#' Function that performs pca on a uganda dataset
+#' @param df a uganda tibble/dataframe, must be the numerical one
+#' @param num_factors nfactors for the principal function (4 for facetask, 3 for flanker)
+my_pca <- function(df, num_factors){
+      df <- df[ , colSums(is.na(df)) == 0] %>% scale()
+      face_pca <- psych::principal(df, nfactors = num_factors)
+
+      return(face_pca)
+}
+
+#' Function that returns scree plot, lollipop, heatmap
+#' @param pca output from my_pca()
+#' 
+pca_plots <- function(pca, comp_1 = "RC1", comp_2 = "RC2"){
+      # lollilop plot
+      loadings <- pca[["loadings"]] %>% matrix_to_df() %>% tibble::rownames_to_column()
+      loadings <- pivot_longer(loadings, cols = 2:ncol(loadings))
+      
+      pop <- ggplot(loadings, aes(x=rowname, y=value)) +
+            geom_segment( aes(x=rowname, xend=rowname, y=0, yend=value), color="skyblue") +
+            geom_point( color="blue", size=3, alpha=0.6) +
+            theme_light() +
+            coord_flip()
+      pop <- pop + facet_grid(cols = vars(name))
+      
+      # Scree
+      vaccounted <- pca[["Vaccounted"]] %>% t() %>% matrix_to_df()
+      
+      scree <- ggplot(data = vaccounted, aes(x= reorder(rownames(vaccounted), desc(Proportion.Var)))) + 
+            geom_bar(stat="identity", width=0.5, aes(y=Proportion.Var)) +
+            geom_line(aes(y= Cumulative.Proportion, group=1)) + geom_point(aes(y= Cumulative.Proportion, group=1))
+      
+      # Scatter
+      scores <- pca[["scores"]] %>% matrix_to_df()
+      
+      scatter <- plotly::plot_ly(x=scores[,comp_1], y = scores[,comp_2], 
+                                      type = "scatter", mode="markers", text=rownames(scores)) %>% 
+            layout(title = paste("Scores - ", comp_1, " vs. ", comp_2), 
+                   scene = list(xaxis=list(title = comp_1),yaxis=list(title = comp_2)))
+      
+      plots_list <- list(pop, scree, scatter)
+      names(plots_list) <- c("pop", "scree", "scatter")
+      return(plots_list)
+}
